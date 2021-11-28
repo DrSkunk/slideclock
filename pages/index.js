@@ -1,82 +1,73 @@
-import Head from 'next/head'
+import clsx from "clsx";
+import Head from "next/head";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const digits = [
+    Math.floor(time.getHours() / 10),
+    Math.floor(time.getHours() % 10),
+    Math.floor(time.getMinutes() / 10),
+    Math.floor(time.getMinutes() % 10),
+    Math.floor(time.getSeconds() / 10),
+    Math.floor(time.getSeconds() % 10),
+  ];
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>{time.toDateString()}</title>
       </Head>
+      <div className="h-screen flex justify-center items-center gap-6">
+        {digits.map((digit, index) => (
+          <Digit key={index} selected={digit} />
+        ))}
+      </div>
+    </>
+  );
+}
 
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+function Digit({ selected }) {
+  return (
+    <div className="relative w-12">
+      <div
+        className={`absolute flex flex-col justify-center items-center gap-2 bg-gray-500 transition duration-500`}
+        style={{ transform: `translateY(${-3.5 * selected}rem)` }}
+      >
+        <Number active={selected === 0}>0</Number>
+        <Number active={selected === 1}>1</Number>
+        <Number active={selected === 2}>2</Number>
+        <Number active={selected === 3}>3</Number>
+        <Number active={selected === 4}>4</Number>
+        <Number active={selected === 5}>5</Number>
+        <Number active={selected === 6}>6</Number>
+        <Number active={selected === 7}>7</Number>
+        <Number active={selected === 8}>8</Number>
+        <Number active={selected === 9}>9</Number>
+      </div>
     </div>
-  )
+  );
+}
+
+function Number({ children, active }) {
+  return (
+    <div
+      className={clsx(
+        "flex justify-center items-center",
+        "w-12 h-12",
+        "rounded-full",
+        "transition duration-300",
+        active && "font-bold shadow bg-black bg-opacity-10 scale-125"
+      )}
+    >
+      {children}
+    </div>
+  );
 }
